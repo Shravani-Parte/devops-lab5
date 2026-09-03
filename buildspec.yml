@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 147440642499.dkr.ecr.ap-south-1.amazonaws.com
+  build:
+    commands:
+      - docker build -t devops-lab5-app .
+      - docker tag devops-lab5-app:latest 147440642499.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:latest
+      - docker push 147440642499.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:latest
+  post_build:
+    commands:
+      - printf '[{"name":"lab5-app","imageUri":"147440642499.dkr.ecr.ap-south-1.amazonaws.com/devops-lab5-app:latest"}]' > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
